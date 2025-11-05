@@ -18,12 +18,16 @@ DB_USER=$dbuser
 DB_NAME=$dbname
 DB_PASS=$dbpass
 
+echo "checking docker"
 if ! command -v docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh && \
   sudo usermod -aG docker $USER && \
   sudo systemctl enable --now docker
 fi
 
+echo "docker installed"
+
+echo "getting offline app image"
 curl -L -o app.tar.bz2 "https://github.com/TheMemonDude/offline-apps/raw/refs/heads/main/demo_offline.tar.bz2"
 bzip2 -dc app.tar.bz2 > "$IMAGE_NAME"
 
