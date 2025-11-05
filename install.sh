@@ -9,6 +9,7 @@ MAC_ADDR=$(ip link show "$INTERFACE" | grep -i "link/ether" | awk '{print $2}')
 
 REPO_FILE="app.tar.bz2"
 IMAGE_NAME="app.tar"
+
 CONTAINER_NAME="app-container"
 CONTAINER_PORT=4000
 HOST_PORT=4000
@@ -20,42 +21,38 @@ DB_USER="$dbuser"
 DB_NAME="$dbname"
 DB_PASS="$dbpass"
 
-echo "$DB_USER - $DB_PASS - $DB_NAME"
-
 DOCKER_GROUP="docker"
 run_as_docker() {
   sg "$DOCKER_GROUP" -c "$*"
 }
 
-echo "checking docker"
 if ! command -v docker >/dev/null 2>&1; then
+  echo "Installing Docker..."
   curl -fsSL https://get.docker.com | sudo sh && \
   sudo systemctl enable --now docker && \
   sudo usermod -aG docker $USER && \
   sudo systemctl restart docker
+  echo "Docker installed!"
 fi
 
-echo "docker installed"
 
-echo "getting offline app image"
 if [ ! -f "$REPO_FILE" ]; then
+
+  echo "Downloading Application Source Code..."
   curl -L -o app.tar.bz2 "https://github.com/TheMemonDude/offline-apps/raw/refs/heads/main/demo_offline.tar.bz2"
 fi
 
-echo "extacting image"
+echo "Extacting App Source Code..."
 bzip2 -dc app.tar.bz2 > "$IMAGE_NAME"
 
-echo "Running Test Image"
-run_as_docker docker run --rm hello-world
-
 LOAD_OUTPUT=$(run_as_docker docker load -i "$IMAGE_NAME" 2>&1)
-echo "$LOAD_OUTPUT"
+echo "Image Loaded: $LOAD_OUTPUT"
 
-# IMAGE_ID=$(echo "$LOAD_OUTPUT" | grep -oE 'demo_offline:[a-z]+' | head -1 || true)
 IMAGE_NAME=$(echo "$LOAD_OUTPUT" | grep -oE 'Loaded image: .*' | sed 's/Loaded image: //' | head -1)
 
-echo "Starting db container"
 run_as_docker bash <<SCRIPT
+
+  echo "Starting Database Container..."
   docker rm -f "$DB_CONTAINER_NAME" 2>/dev/null || true
 
   docker run -d \
@@ -71,11 +68,12 @@ run_as_docker bash <<SCRIPT
   until docker exec "$DB_CONTAINER_NAME" pg_isready -U "$DB_USER" -h localhost >/dev/null 2>&1; do
     sleep 1
   done
-  echo "PostgreSQL is ready!"
+  echo "DB Connection is ready!"
 SCRIPT
 
-echo "Starting App container"
 run_as_docker bash <<SCRIPT
+
+  echo "Starting App container"
   docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
 
   docker run -d \
@@ -88,10 +86,10 @@ run_as_docker bash <<SCRIPT
     $IMAGE_NAME 
 SCRIPT
 
-echo "Running migrations..."
 run_as_docker bash <<SCRIPT
+  echo "Running migrations..."
   sleep 5  # Give app time to boot
   docker exec $CONTAINER_NAME /app/bin/migrate
 SCRIPT
 
-echo "setup completed"
+echo "Setup completed!"
