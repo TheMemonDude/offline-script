@@ -21,8 +21,8 @@ DB_PASS=$dbpass
 echo "checking docker"
 if ! command -v docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh && \
+  sudo systemctl enable --now docker && \
   sudo usermod -aG docker $USER && \
-  sudo systemctl enable --now docker
   newgrp docker
 fi
 
