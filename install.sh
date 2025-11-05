@@ -16,9 +16,11 @@ HOST_PORT=4000
 DB_CONTAINER_NAME="postgres"
 DB_CONTAINER_PORT=5432
 DB_HOST_PORT=5432
-DB_USER=$dbuser
-DB_NAME=$dbname
-DB_PASS=$dbpass
+DB_USER="$dbuser"
+DB_NAME="$dbname"
+DB_PASS="$dbpass"
+
+echo "$DB_USER - $DB_PASS - $DB_NAME"
 
 DOCKER_GROUP="docker"
 run_as_docker() {
