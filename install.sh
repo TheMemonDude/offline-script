@@ -81,7 +81,7 @@ run_as_docker bash <<SCRIPT
   docker run -d \
     --name $CONTAINER_NAME \
     --link $DB_CONTAINER_NAME:db \
-    -p $HOST_PORT:$DB_CONTAINER_PORT \
+    -p $HOST_PORT:$CONTAINER_PORT \
     -e DATABASE_URL=ecto://$DB_USER:$DB_PASS@db:5432/$DB_NAME \
     -e SECRET_KEY_BASE=$(openssl rand -hex 32) \
     -e PORT=$CONTAINER_PORT \
