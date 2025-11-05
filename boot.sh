@@ -1,6 +1,8 @@
 #!/bin/bash
 
-sudo apt update && sudo apt install -y git
+# dbname=dummy dbpass=123 wget -qO- https://example.com/boot.sh | bash
+
+sudo apt update && sudo apt install -y git bzip2
 
 GITHUB_REPO="TheMemonDude/offline-script"
 
