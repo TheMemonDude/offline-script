@@ -52,7 +52,7 @@ echo "$LOAD_OUTPUT"
 IMAGE_NAME=$(echo "$LOAD_OUTPUT" | grep -oE 'Loaded image: .*' | sed 's/Loaded image: //' | head -1)
 
 echo "Starting db container"
-run_as_docker bash <<'SCRIPT'
+run_as_docker bash <<SCRIPT
   docker run -d \
     --name $DB_CONTAINER_NAME \
     -e POSTGRES_USER=$DB_USER \
@@ -64,7 +64,7 @@ run_as_docker bash <<'SCRIPT'
 SCRIPT
 
 echo "Starting App container"
-run_as_docker bash <<'SCRIPT'
+run_as_docker bash <<SCRIPT
   docker run -d \
     --name $CONTAINER_NAME \
     --link $DB_CONTAINER_NAME:db \
@@ -76,7 +76,7 @@ run_as_docker bash <<'SCRIPT'
 SCRIPT
 
 echo "Running migrations..."
-run_as_docker bash <<'SCRIPT'
+run_as_docker bash <<SCRIPT
   docker exec $CONTAINER_NAME /app/bin/migrate
 SCRIPT
 
