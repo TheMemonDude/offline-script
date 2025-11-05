@@ -23,6 +23,7 @@ if ! command -v docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh && \
   sudo usermod -aG docker $USER && \
   sudo systemctl enable --now docker
+  newgrp docker
 fi
 
 echo "docker installed"
