@@ -4,7 +4,7 @@
 set -eEo pipefail
 
 INTERFACE=$(ip -o route get 8.8.8.8 | awk '{print $5}' | head -1) && \
-MAC_ADDR=$(ip link show "$iface" | grep -i "link/ether" | awk '{print $2}')
+MAC_ADDR=$(ip link show "$INTERFACE" | grep -i "link/ether" | awk '{print $2}')
 
 IMAGE_NAME="app.tar"
 CONTAINER_NAME="app-container"
