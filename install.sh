@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Exit immediately if a command exits with a non-zero status
-# set -eEo pipefail
-set -euo pipefail
+set -eEo pipefail
+# set -euo pipefail
 
 INTERFACE=$(ip -o route get 8.8.8.8 | awk '{print $5}' | head -1) && \
 MAC_ADDR=$(ip link show "$INTERFACE" | grep -i "link/ether" | awk '{print $2}')
