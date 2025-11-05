@@ -42,14 +42,14 @@ fi
 echo "extacting image"
 bzip2 -dc app.tar.bz2 > "$IMAGE_NAME"
 
-LOAD_OUTPUT=$(docker load -i "$IMAGE_NAME" 2>&1)
+echo "Running Test Image"
+run_as_docker docker run --rm hello-world
+
+LOAD_OUTPUT=$(run_as_docker docker load -i "$IMAGE_NAME" 2>&1)
 echo "$LOAD_OUTPUT"
 
 # IMAGE_ID=$(echo "$LOAD_OUTPUT" | grep -oE 'demo_offline:[a-z]+' | head -1 || true)
 IMAGE_NAME=$(echo "$LOAD_OUTPUT" | grep -oE 'Loaded image: .*' | sed 's/Loaded image: //' | head -1)
-
-echo "Running Test Image"
-run_as_docker docker run --rm hello-world
 
 echo "Starting db container"
 run_as_docker bash <<'SCRIPT'
