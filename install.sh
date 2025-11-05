@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Exit immediately if a command exits with a non-zero status
-set -eEo pipefail
+# set -eEo pipefail
+set -euo pipefail
 
 INTERFACE=$(ip -o route get 8.8.8.8 | awk '{print $5}' | head -1) && \
 MAC_ADDR=$(ip link show "$INTERFACE" | grep -i "link/ether" | awk '{print $2}')
@@ -53,6 +54,8 @@ IMAGE_NAME=$(echo "$LOAD_OUTPUT" | grep -oE 'Loaded image: .*' | sed 's/Loaded i
 
 echo "Starting db container"
 run_as_docker bash <<SCRIPT
+  docker rm -f "$DB_CONTAINER_NAME" 2>/dev/null || true
+
   docker run -d \
     --name $DB_CONTAINER_NAME \
     -e POSTGRES_USER=$DB_USER \
@@ -61,10 +64,18 @@ run_as_docker bash <<SCRIPT
     -p $DB_HOST_PORT:$DB_CONTAINER_PORT \
     -v app_db_data:/var/lib/postgresql/data/pgdata \
     postgres:18
+
+  echo "Waiting for PostgreSQL to be ready..."
+  until docker exec "$DB_CONTAINER_NAME" pg_isready -U "$DB_USER" -h localhost >/dev/null 2>&1; do
+    sleep 1
+  done
+  echo "PostgreSQL is ready!"
 SCRIPT
 
 echo "Starting App container"
 run_as_docker bash <<SCRIPT
+  docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
+
   docker run -d \
     --name $CONTAINER_NAME \
     --link $DB_CONTAINER_NAME:db \
@@ -77,6 +88,7 @@ SCRIPT
 
 echo "Running migrations..."
 run_as_docker bash <<SCRIPT
+  sleep 5  # Give app time to boot
   docker exec $CONTAINER_NAME /app/bin/migrate
 SCRIPT
 
