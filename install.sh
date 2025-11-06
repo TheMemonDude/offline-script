@@ -65,7 +65,8 @@ if ! command -v docker >/dev/null 2>&1; then
       "max-file": "5"
     }
   }
-  EOF
+EOF
+
   sudo systemctl enable --now docker && \
   sudo usermod -aG docker $USER && \
   sudo systemctl restart docker
