@@ -272,7 +272,7 @@ sudo ufw allow from $LAN_NETWORK to any port 80 proto tcp
 sudo ufw allow from $LAN_NETWORK to any port 443 proto tcp
 
 # Allow SSH ONLY from your current laptop
-sudo ufw allow from "$HOST_MACHINE_IP" to $STATIC_IP port 22 proto tcp
+sudo ufw allow from $LAN_NETWORK to $STATIC_IP port 22 proto tcp
 
 sudo ufw --force enable
 
