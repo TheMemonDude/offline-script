@@ -249,12 +249,14 @@ logpath = /var/log/caddy/access.log
 maxretry = 3
 bantime = 3600
 EOF
+
 sudo tee /etc/fail2ban/filter.d/caddy.conf > /dev/null <<'EOF'
 [Definition]
 failregex = ^.*"POST /.*" 401.*$
             ^.*"GET /.*" 401.*$
 ignoreregex =
 EOF
+
 sudo mkdir -p /var/log/caddy
 sudo touch /var/log/caddy/access.log
 sudo chown $USER:$USER /var/log/caddy/access.log
