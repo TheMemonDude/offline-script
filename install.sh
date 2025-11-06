@@ -138,6 +138,7 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=0
 Restart=always
+RestartSec=20
 ExecStartPre=-/usr/bin/docker stop $DB_CONTAINER
 ExecStartPre=-/usr/bin/docker rm $DB_CONTAINER
 ExecStart=/usr/bin/docker run -d \
