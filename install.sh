@@ -148,7 +148,6 @@ ExecStart=/usr/bin/docker run -d \
   -p $DB_PORT:$DB_PORT \
   --network host \
   $DB_IMAGE
-ExecStop=/usr/bin/docker stop $DB_CONTAINER
 
 [Install]
 WantedBy=multi-user.target
