@@ -151,7 +151,7 @@ ExecStart=/usr/bin/docker run -d \
   $DB_IMAGE
 ExecStop=/usr/bin/docker stop $DB_CONTAINER
 ExecStopPost=/bin/bash -c 'mkdir -p $BACKUP_DIR && \
-  tar -czf $BACKUP_DIR/db-\$(date +%F-%H%M).tar.gz -C $(dirname $DB_DATA) $(basename $DB_DATA)'
+  tar -czf $BACKUP_DIR/db-\$(/bin/date +\\%F-\\%H\\%M).tar.gz -C \$(dirname $DB_DATA) \$(basename $DB_DATA)'
 
 [Install]
 WantedBy=multi-user.target
@@ -183,7 +183,8 @@ ExecStart=/usr/bin/docker run -d \
   $APP_IMAGE
 ExecStop=/usr/bin/docker stop $APP_CONTAINER
 ExecStopPost=/bin/bash -c 'mkdir -p $BACKUP_DIR && \
-  tar -czf $BACKUP_DIR/app-\$(date +%F-%H%M).tar.gz -C $(dirname $APP_DATA) $(basename $APP_DATA)'
+  tar -czf $BACKUP_DIR/app-\$(/bin/date +\\%F-\\%H\\%M).tar.gz -C \$(dirname $APP_DATA) \$(basename $APP_DATA)'
+
 
 [Install]
 WantedBy=multi-user.target
