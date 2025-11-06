@@ -235,6 +235,14 @@ EOF
 
 # === 14. Fail2Ban ===
 sudo tee /etc/fail2ban/jail.local > /dev/null <<EOF
+[ssh]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 3600
+
 [caddy]
 enabled = true
 port = http,https
