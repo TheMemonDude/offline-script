@@ -142,7 +142,6 @@ ExecStartPre=-/usr/bin/docker stop $DB_CONTAINER
 ExecStartPre=-/usr/bin/docker rm $DB_CONTAINER
 ExecStart=/usr/bin/docker run -d \
   --name $DB_CONTAINER \
-  --restart unless-stopped \
   -e POSTGRES_PASSWORD=$DB_PASSWORD \
   -e POSTGRES_DB=$DB_NAME \
   -v $DB_DATA:/var/lib/postgresql/data/pgdata \
@@ -169,7 +168,6 @@ ExecStartPre=-/usr/bin/docker stop $APP_CONTAINER
 ExecStartPre=-/usr/bin/docker rm $APP_CONTAINER
 ExecStart=/usr/bin/docker run -d \
   --name $APP_CONTAINER \
-  --restart unless-stopped \
   -v $APP_DATA:/app/data \
   -e PHX_SERVER=true \
   -e PHX_HOST=$APP_DOMAIN \
@@ -200,7 +198,6 @@ ExecStartPre=-/usr/bin/docker stop $CADDY_CONTAINER
 ExecStartPre=-/usr/bin/docker rm $CADDY_CONTAINER
 ExecStart=/usr/bin/docker run -d \
   --name $CADDY_CONTAINER \
-  --restart unless-stopped \
   -v $CADDYFILE:/etc/caddy/Caddyfile:ro \
   -v $SSL_DIR:/etc/ssl/caddy:ro \
   -p 80:80 -p 443:443 \

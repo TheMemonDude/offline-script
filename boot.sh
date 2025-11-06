@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# export domain=offline-app.local dbuser=postgres dbname=dummy_db dbpass=postgres123 && wget -qO- https://raw.githubusercontent.com/TheMemonDude/offline-script/refs/heads/main/boot.sh | bash
+# export ref_branch=test-mode domain=offline-app.local dbuser=postgres dbname=dummy_db dbpass=postgres123 && wget -qO- https://raw.githubusercontent.com/TheMemonDude/offline-script/refs/heads/main/boot.sh | bash
 
 GITHUB_REPO="TheMemonDude/offline-script"
 
