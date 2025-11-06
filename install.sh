@@ -19,7 +19,7 @@ IMAGE_TAR_FILE="app.tar"
 
 # App
 APP_IMAGE="demo_offline_app:latest"
-APP_CONTAINER="app-container"
+APP_CONTAINER="app"
 APP_PORT=8080
 
 # DB
@@ -78,7 +78,7 @@ sudo tee /etc/netplan/01-static.yaml > /dev/null <<EOF
 network:
   version: 2
   ethernets:
-    "$INTERFACE":
+    $INTERFACE:
       dhcp4: no
       addresses: [$STATIC_IP/24]
       gateway4: $GATEWAY
@@ -155,59 +155,59 @@ WantedBy=multi-user.target
 EOF
 
 # === 10. App Service ===
-sudo tee /etc/systemd/system/$APP_CONTAINER.service > /dev/null <<EOF
-[Unit]
-Description=Web App
-After=$DB_CONTAINER.service
-Requires=$DB_CONTAINER.service
-
-[Service]
-TimeoutStartSec=0
-Restart=always
-ExecStartPre=-/usr/bin/docker stop $APP_CONTAINER
-ExecStartPre=-/usr/bin/docker rm $APP_CONTAINER
-ExecStart=/usr/bin/docker run -d \
-  --name $APP_CONTAINER \
-  -v $APP_DATA:/app/data \
-  -e PHX_SERVER=true \
-  -e PHX_HOST=$APP_DOMAIN \
-  -e PORT=$APP_PORT \
-  -e SECRET_KEY_BASE=$(openssl rand -base64 48 | tr -d '\n') \
-  -e DATABASE_URL=ecto://postgres:$DB_PASSWORD@127.0.0.1:$DB_PORT/$DB_NAME
-  -p $APP_PORT:$APP_PORT \
-  --network host \
-  $APP_IMAGE
-ExecStop=/usr/bin/docker stop $APP_CONTAINER
-
-
-[Install]
-WantedBy=multi-user.target
-EOF
+# sudo tee /etc/systemd/system/$APP_CONTAINER.service > /dev/null <<EOF
+# [Unit]
+# Description=Web App
+# After=$DB_CONTAINER.service
+# Requires=$DB_CONTAINER.service
+#
+# [Service]
+# TimeoutStartSec=0
+# Restart=always
+# ExecStartPre=-/usr/bin/docker stop $APP_CONTAINER
+# ExecStartPre=-/usr/bin/docker rm $APP_CONTAINER
+# ExecStart=/usr/bin/docker run -d \
+#   --name $APP_CONTAINER \
+#   -v $APP_DATA:/app/data \
+#   -e PHX_SERVER=true \
+#   -e PHX_HOST=$APP_DOMAIN \
+#   -e PORT=$APP_PORT \
+#   -e SECRET_KEY_BASE=$(openssl rand -base64 48 | tr -d '\n') \
+#   -e DATABASE_URL=ecto://postgres:$DB_PASSWORD@127.0.0.1:$DB_PORT/$DB_NAME
+#   -p $APP_PORT:$APP_PORT \
+#   --network host \
+#   $APP_IMAGE
+# ExecStop=/usr/bin/docker stop $APP_CONTAINER
+#
+#
+# [Install]
+# WantedBy=multi-user.target
+# EOF
 
 # === 11. Caddy Proxy ===
-sudo tee /etc/systemd/system/$CADDY_CONTAINER.service > /dev/null <<EOF
-[Unit]
-Description=Caddy Proxy
-After=$APP_CONTAINER.service
-Requires=$APP_CONTAINER.service
-
-[Service]
-TimeoutStartSec=0
-Restart=always
-ExecStartPre=-/usr/bin/docker stop $CADDY_CONTAINER
-ExecStartPre=-/usr/bin/docker rm $CADDY_CONTAINER
-ExecStart=/usr/bin/docker run -d \
-  --name $CADDY_CONTAINER \
-  -v $CADDYFILE:/etc/caddy/Caddyfile:ro \
-  -v $SSL_DIR:/etc/ssl/caddy:ro \
-  -p 80:80 -p 443:443 \
-  --network host \
-  caddy:2-alpine
-ExecStop=/usr/bin/docker stop $CADDY_CONTAINER
-
-[Install]
-WantedBy=multi-user.target
-EOF
+# sudo tee /etc/systemd/system/$CADDY_CONTAINER.service > /dev/null <<EOF
+# [Unit]
+# Description=Caddy Proxy
+# After=$APP_CONTAINER.service
+# Requires=$APP_CONTAINER.service
+#
+# [Service]
+# TimeoutStartSec=0
+# Restart=always
+# ExecStartPre=-/usr/bin/docker stop $CADDY_CONTAINER
+# ExecStartPre=-/usr/bin/docker rm $CADDY_CONTAINER
+# ExecStart=/usr/bin/docker run -d \
+#   --name $CADDY_CONTAINER \
+#   -v $CADDYFILE:/etc/caddy/Caddyfile:ro \
+#   -v $SSL_DIR:/etc/ssl/caddy:ro \
+#   -p 80:80 -p 443:443 \
+#   --network host \
+#   caddy:2-alpine
+# ExecStop=/usr/bin/docker stop $CADDY_CONTAINER
+#
+# [Install]
+# WantedBy=multi-user.target
+# EOF
 
 # === 12. Daily Backup ===
 # sudo tee /etc/cron.daily/myapp-backup > /dev/null <<'EOF'
@@ -266,12 +266,13 @@ sudo ufw --force enable
 
 # === 16. Enable & Start ===
 sudo systemctl daemon-reload
-sudo systemctl enable $DB_CONTAINER.service $APP_CONTAINER.service $CADDY_CONTAINER.service fail2ban
+sudo systemctl enable $DB_CONTAINER.service fail2ban
+# sudo systemctl enable $DB_CONTAINER.service $APP_CONTAINER.service $CADDY_CONTAINER.service fail2ban
 sudo systemctl start $DB_CONTAINER.service
-sleep 10
-sudo systemctl start $APP_CONTAINER.service
-sleep 3
-sudo systemctl start $CADDY_CONTAINER.service
+# sleep 10
+# sudo systemctl start $APP_CONTAINER.service
+# sleep 3
+# sudo systemctl start $CADDY_CONTAINER.service
 sudo systemctl start fail2ban
 
 # run_as_docker bash <<SCRIPT
