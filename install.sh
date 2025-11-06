@@ -12,6 +12,7 @@ APP_DOMAIN="$domain"
 STATIC_IP="192.168.1.100"
 GATEWAY="192.168.1.1"
 LAN_NETWORK="192.168.1.0/24"
+HOST_MACHINE_IP=$(ip route get $STATIC_IP | awk '{print $7}' | head -1)
 
 # File Extraction
 BZ2_FILE="app.tar.bz2"
@@ -269,6 +270,10 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow from $LAN_NETWORK to any port 80 proto tcp
 sudo ufw allow from $LAN_NETWORK to any port 443 proto tcp
+
+# Allow SSH ONLY from your current laptop
+sudo ufw allow from "$HOST_MACHINE_IP" to $STATIC_IP port 22 proto tcp
+
 sudo ufw --force enable
 
 # === 16. Enable & Start ===
