@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# export dbuser=postgres dbname=dummy_db dbpass=postgres123 && wget -qO- https://raw.githubusercontent.com/TheMemonDude/offline-script/refs/heads/main/boot.sh | bash
-
-sudo apt update && sudo apt install -y git bzip2
+# export domain=offline-app.local dbuser=postgres dbname=dummy_db dbpass=postgres123 && wget -qO- https://raw.githubusercontent.com/TheMemonDude/offline-script/refs/heads/main/boot.sh | bash
 
 GITHUB_REPO="TheMemonDude/offline-script"
 
