@@ -19,7 +19,7 @@ BZ2_FILE="app.tar.bz2"
 IMAGE_TAR_FILE="app.tar"
 
 # App
-APP_IMAGE="demo_offline_app:latest"
+APP_IMAGE="demo_offline:latest"
 APP_CONTAINER="app"
 APP_PORT=8080
 
