@@ -118,7 +118,7 @@ sudo tee "$CADDYFILE" > /dev/null <<EOF
   }
 EOF
 
-if [ ! -f "$REPO_FILE" ]; then
+if [ ! -f "$IMAGE_TAR_FILE" ]; then
   echo "Downloading Application Source Code..."
   curl -L -o $BZ2_FILE "https://github.com/TheMemonDude/offline-apps/raw/refs/heads/main/demo_offline.tar.bz2"
 fi
