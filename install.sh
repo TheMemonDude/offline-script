@@ -173,7 +173,7 @@ ExecStart=/usr/bin/docker run -d \
   -e PHX_HOST=$APP_DOMAIN \
   -e PORT=$APP_PORT \
   -e SECRET_KEY_BASE=$(openssl rand -base64 48 | tr -d '\n') \
-  -e DATABASE_URL=ecto://postgres:$DB_PASSWORD@127.0.0.1:$DB_PORT/$DB_NAME
+  -e DATABASE_URL=ecto://postgres:$DB_PASSWORD@127.0.0.1:$DB_PORT/$DB_NAME \
   -p $APP_PORT:$APP_PORT \
   --network host \
   $APP_IMAGE
