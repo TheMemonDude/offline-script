@@ -155,34 +155,32 @@ WantedBy=multi-user.target
 EOF
 
 # === 10. App Service ===
-# sudo tee /etc/systemd/system/$APP_CONTAINER.service > /dev/null <<EOF
-# [Unit]
-# Description=Web App
-# After=$DB_CONTAINER.service
-# Requires=$DB_CONTAINER.service
-#
-# [Service]
-# TimeoutStartSec=0
-# Restart=always
-# ExecStartPre=-/usr/bin/docker stop $APP_CONTAINER
-# ExecStartPre=-/usr/bin/docker rm $APP_CONTAINER
-# ExecStart=/usr/bin/docker run -d \
-#   --name $APP_CONTAINER \
-#   -v $APP_DATA:/app/data \
-#   -e PHX_SERVER=true \
-#   -e PHX_HOST=$APP_DOMAIN \
-#   -e PORT=$APP_PORT \
-#   -e SECRET_KEY_BASE=$(openssl rand -base64 48 | tr -d '\n') \
-#   -e DATABASE_URL=ecto://postgres:$DB_PASSWORD@127.0.0.1:$DB_PORT/$DB_NAME
-#   -p $APP_PORT:$APP_PORT \
-#   --network host \
-#   $APP_IMAGE
-# ExecStop=/usr/bin/docker stop $APP_CONTAINER
-#
-#
-# [Install]
-# WantedBy=multi-user.target
-# EOF
+sudo tee /etc/systemd/system/$APP_CONTAINER.service > /dev/null <<EOF
+[Unit]
+Description=Web App
+After=$DB_CONTAINER.service
+Requires=$DB_CONTAINER.service
+
+[Service]
+TimeoutStartSec=0
+Restart=no
+ExecStartPre=-/usr/bin/docker stop $APP_CONTAINER
+ExecStartPre=-/usr/bin/docker rm $APP_CONTAINER
+ExecStart=/usr/bin/docker run -d \
+  --name $APP_CONTAINER \
+  -v $APP_DATA:/app/data \
+  -e PHX_SERVER=true \
+  -e PHX_HOST=$APP_DOMAIN \
+  -e PORT=$APP_PORT \
+  -e SECRET_KEY_BASE=$(openssl rand -base64 48 | tr -d '\n') \
+  -e DATABASE_URL=ecto://postgres:$DB_PASSWORD@127.0.0.1:$DB_PORT/$DB_NAME
+  -p $APP_PORT:$APP_PORT \
+  --network host \
+  $APP_IMAGE
+
+[Install]
+WantedBy=multi-user.target
+EOF
 
 # === 11. Caddy Proxy ===
 # sudo tee /etc/systemd/system/$CADDY_CONTAINER.service > /dev/null <<EOF
