@@ -265,16 +265,16 @@ sudo touch /var/log/caddy/access.log
 sudo chown $USER:$USER /var/log/caddy/access.log
 
 # === 15. Firewall ===
-sudo ufw --force reset
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-sudo ufw allow from $LAN_NETWORK to any port 80 proto tcp
-sudo ufw allow from $LAN_NETWORK to any port 443 proto tcp
+# sudo ufw --force reset
+# sudo ufw default deny incoming
+# sudo ufw default allow outgoing
+# sudo ufw allow from $LAN_NETWORK to any port 80 proto tcp
+# sudo ufw allow from $LAN_NETWORK to any port 443 proto tcp
 
 # Allow SSH ONLY from your current laptop
-sudo ufw allow from $LAN_NETWORK to any port 22 proto tcp
+# sudo ufw allow from $LAN_NETWORK to any port 22 proto tcp
 
-sudo ufw --force enable
+# sudo ufw --force enable
 
 # === 16. Enable & Start ===
 sudo systemctl daemon-reload
