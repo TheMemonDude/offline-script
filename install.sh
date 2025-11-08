@@ -276,12 +276,14 @@ sudo chown $USER:$USER /var/log/caddy/access.log
 
 # === 16. Enable & Start ===
 sudo systemctl daemon-reload
-sudo systemctl enable $DB_CONTAINER.service fail2ban
+sudo systemctl enable $DB_CONTAINER.service $APP_CONTAINER.service fail2ban
 # sudo systemctl enable $DB_CONTAINER.service $APP_CONTAINER.service $CADDY_CONTAINER.service fail2ban
 sudo systemctl start $DB_CONTAINER.service
-# sleep 10
-# sudo systemctl start $APP_CONTAINER.service
-# sleep 3
+sleep 30
+
+sudo systemctl start $APP_CONTAINER.service
+sleep 30
+
 # sudo systemctl start $CADDY_CONTAINER.service
 sudo systemctl start fail2ban
 
