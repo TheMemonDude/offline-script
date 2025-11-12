@@ -284,6 +284,8 @@ sleep 30
 sudo systemctl start $APP_CONTAINER.service
 sleep 30
 
+docker exec -it $APP_CONTAINER /app/bin/migrate
+
 # sudo systemctl start $CADDY_CONTAINER.service
 sudo systemctl start fail2ban
 
